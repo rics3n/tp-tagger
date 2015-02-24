@@ -6,7 +6,7 @@ var $ = require('gulp-load-plugins')({
   pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
 });
 
-gulp.task('styles', ['wiredep', 'injector:css:preprocessor'], function () {
+gulp.task('styles', ['clean', 'wiredep', 'injector:css:preprocessor'], function () {
   return gulp.src(['example/app/index.scss', 'example/app/vendor.scss'])
     .pipe($.sass({style: 'expanded'}))
     .on('error', function handleError(err) {
@@ -17,7 +17,7 @@ gulp.task('styles', ['wiredep', 'injector:css:preprocessor'], function () {
     .pipe(gulp.dest('.tmp/app/'));
 });
 
-gulp.task('injector:css:preprocessor', function () {
+gulp.task('injector:css:preprocessor', ['clean'], function () {
   return gulp.src('example/app/index.scss')
     .pipe($.inject(gulp.src([
         'example/{app,components}/**/*.scss',
@@ -37,7 +37,7 @@ gulp.task('injector:css:preprocessor', function () {
     .pipe(gulp.dest('example/app/'));
 });
 
-gulp.task('injector:css', ['styles'], function () {
+gulp.task('injector:css', ['clean', 'styles'], function () {
   return gulp.src('example/index.html')
     .pipe($.inject(gulp.src([
         '.tmp/{app,components}/**/*.css',
@@ -55,7 +55,7 @@ gulp.task('scripts', function () {
     .pipe($.jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('injector:js', ['scripts', 'injector:css'], function () {
+gulp.task('injector:js', ['scripts', 'injector:css', 'clean'], function () {
   return gulp.src('example/index.html')
     .pipe($.inject(gulp.src([
       'example/{app,components}/**/*.js',
@@ -68,7 +68,7 @@ gulp.task('injector:js', ['scripts', 'injector:css'], function () {
     .pipe(gulp.dest('example/'));
 });
 
-gulp.task('partials', function () {
+gulp.task('partials', ['clean'], function () {
   return gulp.src(['example/{app,components}/**/*.html', 'src/**/*.html'])
     .pipe($.minifyHtml({
       empty: true,
@@ -76,12 +76,12 @@ gulp.task('partials', function () {
       quotes: true
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
-      module: 'tp.tagger'
+      module: 'tpTaggerApp'
     }))
     .pipe(gulp.dest('.tmp/inject/'));
 });
 
-gulp.task('html', ['wiredep', 'injector:css', 'injector:js', 'partials'], function () {
+gulp.task('html', ['clean', 'wiredep', 'injector:css', 'injector:js', 'partials'], function () {
   var htmlFilter = $.filter('*.html');
   var jsFilter = $.filter('**/*.js');
   var cssFilter = $.filter('**/*.css');
@@ -108,7 +108,7 @@ gulp.task('html', ['wiredep', 'injector:css', 'injector:js', 'partials'], functi
     .pipe($.size({ title: 'example_dist', showFiles: true }));
 });
 
-gulp.task('images', function () {
+gulp.task('images', ['clean'], function () {
   return gulp.src('example/assets/images/**/*')
     .pipe($.imagemin({
       optimizationLevel: 3,
@@ -118,16 +118,20 @@ gulp.task('images', function () {
     .pipe(gulp.dest('example_dist/assets/images/'));
 });
 
-gulp.task('fonts', function () {
+gulp.task('fonts', ['clean'], function () {
   return gulp.src($.mainBowerFiles())
     .pipe($.filter('**/*.{eot,svg,ttf,woff}'))
     .pipe($.flatten())
     .pipe(gulp.dest('example_dist/fonts/'));
 });
 
-gulp.task('misc', function () {
+gulp.task('misc', ['clean'], function () {
   return gulp.src('example/**/*.ico')
     .pipe(gulp.dest('example_dist/'));
 });
 
-gulp.task('build:example', ['html', 'images', 'fonts', 'misc']);
+gulp.task('clean', function (done) {
+  $.del(['dist/', '.tmp/tp_tagger'], done);
+});
+
+gulp.task('build:example', ['clean', 'html', 'images', 'fonts', 'misc']);

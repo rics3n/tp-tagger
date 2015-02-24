@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('typeahead')
+angular.module('tpTaggerApp')
   .controller('MainCtrl', function($scope, $log, $q) {
     var search = function(searchValues) {
       $log.info('Executing search with tags: ' + searchValues);
@@ -54,8 +54,4 @@ angular.module('typeahead')
       selectedTags: selectedTags3,
       dictionary: dictionary
     };
-
-    angular.forEach($scope.awesomeThings, function(awesomeThing) {
-      awesomeThing.rank = Math.random();
-    });
   });

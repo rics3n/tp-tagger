@@ -25,7 +25,7 @@ gulp.task('tagger:partials', ['tagger:clean'], function () {
       quotes: true
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
-      module: 'tp.tagger'
+      module: 'tpTagger'
     }))
     .pipe(gulp.dest('.tmp/tp_tagger'));
 });

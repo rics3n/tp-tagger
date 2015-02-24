@@ -4,7 +4,7 @@
  * Created by rucs3n on 2015/01/15.
  */
 
-angular.module('tp.tagger', [])
+angular.module('tpTagger', [])
   .directive('tpTagger', function($timeout, $filter, $log) {
     return {
       restrict: 'AE',

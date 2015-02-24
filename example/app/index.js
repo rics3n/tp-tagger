@@ -1,3 +1,3 @@
 'use strict';
 
-angular.module('tpTagger', ['ngAnimate', 'ngTouch', 'ngSanitize', 'tp.tagger']);
+angular.module('tpTaggerApp', ['ngAnimate', 'ngTouch', 'ngSanitize', 'tpTagger']);

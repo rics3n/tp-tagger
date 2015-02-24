@@ -3,7 +3,7 @@
 describe('controllers', function(){
   var scope;
 
-  beforeEach(module('typeahead'));
+  beforeEach(module('tpTaggerApp'));
 
   beforeEach(inject(function($rootScope) {
   	scope = $rootScope.$new();
