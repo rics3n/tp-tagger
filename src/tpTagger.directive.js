@@ -29,14 +29,16 @@ angular.module('tpTagger', [])
         };
 
         $scope.addTag = function(tag) {
-          if (!$scope.options.uniqueTags || $scope.selectedLowerTags.indexOf(tag.toLowerCase()) === -1) {
+          if ((!$scope.options.uniqueTags || $scope.selectedLowerTags.indexOf(tag.toLowerCase()) === -1) && tag !== '') {
             $scope.selectedTags.push(tag);
             $scope.selectedLowerTags.push(tag.toLowerCase());
             $scope.searchTag = '';
-          } else {
-            $log.info('tag not added because not unique');
+          } else if(tag !== ''){
+            $log.info('tag not unique');
             setError('uniqueError', true);
             $scope.searchTag = '';
+          } else {
+            $log.info('tag empty');
           }
         };
 
@@ -61,6 +63,10 @@ angular.module('tpTagger', [])
 
         $scope.isActive = function(index) {
           return index === $scope.selectedSuggestionIndex;
+        };
+
+        $scope.selectActive = function(index) {
+          $scope.selectedSuggestionIndex = index;
         };
 
         $scope.changeInput = function() {
@@ -140,11 +146,15 @@ angular.module('tpTagger', [])
         var mapOfKeyStrokes = {};
 
         element.bind('blur', function() {
-          if (scope.searchTag.length > 0) {
+          if (scope.searchTag.length > 0 && scope.selectedSuggestionIndex < 0) {
             //add the input
             scope.addTag(scope.searchTag);
+          } else if (scope.selectedSuggestionIndex >= 0) {
+            scope.addTag(scope.suggestions[scope.selectedSuggestionIndex]);
+          } else {
+            scope.resetErrors();
           }
-          scope.resetErrors();
+
           scope.changeSuggestionVisible(false);
         });
 

@@ -58,6 +58,7 @@ $BORDER_RADIUS: 0;
         line-height: inherit;
 
         width: 300px;
+        color: $SUGGESTIONS_TEXT_COLOR;
       }
       .tag-input:focus {
         box-shadow: none;
