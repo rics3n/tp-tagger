@@ -23,6 +23,7 @@ $BORDER_RADIUS: 0;
   display: flex;
   position: relative;
   flex-direction: row;
+  margin-top: 15px;
 
   .tp-tags-wrapper {
     flex: 1;
@@ -170,6 +171,6 @@ $BORDER_RADIUS: 0;
   position: absolute;
   margin-top: -20px;
   margin-left: 15px;
-  font-size: 12px;
+  font-size: 13px;
   color: $TAG_TEXT_COLOR;
 }
