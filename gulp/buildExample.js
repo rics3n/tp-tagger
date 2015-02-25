@@ -120,7 +120,8 @@ gulp.task('images', ['clean'], function () {
 });
 
 gulp.task('fonts', ['clean'], function () {
-  return gulp.src($.mainBowerFiles())
+  return gulp.src($.mainBowerFiles({
+    paths: 'example'}))
     .pipe($.filter('**/*.{eot,svg,ttf,woff}'))
     .pipe($.flatten())
     .pipe(gulp.dest('example/dist/fonts/'));
