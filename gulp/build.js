@@ -6,7 +6,7 @@ var $ = require('gulp-load-plugins')({
   pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
 });
 
-gulp.task('tagger:styles', ['tagger:clean'], function () {
+gulp.task('tagger:styles', function () {
   return gulp.src(['src/tp_tagger.scss'])
     .pipe($.sass({style: 'expanded'}))
     .on('error', function handleError(err) {
@@ -17,7 +17,7 @@ gulp.task('tagger:styles', ['tagger:clean'], function () {
     .pipe(gulp.dest('.tmp/tp_tagger/'));
 });
 
-gulp.task('tagger:partials', ['tagger:clean'], function () {
+gulp.task('tagger:partials', function () {
   return gulp.src('src/**/*.html')
     .pipe($.minifyHtml({
       empty: true,
@@ -46,7 +46,7 @@ gulp.task('tagger:concat', ['tagger:js'], function () {
     .pipe(gulp.dest('.tmp/tp_tagger'));
 });
 
-gulp.task('tagger', ['tagger:clean', 'tagger:concat', 'tagger:styles'], function () {
+gulp.task('tagger', ['tagger:concat', 'tagger:styles'], function () {
   var jsFilter = $.filter('**/*.js');
   var cssFilter = $.filter('**/*.css');
 
@@ -63,12 +63,6 @@ gulp.task('tagger', ['tagger:clean', 'tagger:concat', 'tagger:styles'], function
     .pipe(cssFilter.restore())
     .pipe(gulp.dest('dist/'))
     .pipe($.size({ title: 'dist/', showFiles: true }));
-});
-
-
-
-gulp.task('tagger:clean', function (done) {
-  $.del(['dist/', '.tmp/'], done);
 });
 
 gulp.task('build', ['tagger']);
