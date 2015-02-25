@@ -6,7 +6,7 @@ var $ = require('gulp-load-plugins')({
   pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
 });
 
-gulp.task('styles', ['clean', 'wiredep', 'injector:css:preprocessor'], function () {
+gulp.task('styles', ['clean', 'injector:css:preprocessor'], function () {
   return gulp.src(['example/app/index.scss', 'example/app/vendor.scss'])
     .pipe($.sass({style: 'expanded'}))
     .on('error', function handleError(err) {
@@ -21,6 +21,7 @@ gulp.task('injector:css:preprocessor', ['clean'], function () {
   return gulp.src('example/app/index.scss')
     .pipe($.inject(gulp.src([
         'example/{app,components}/**/*.scss',
+        'src/**/*.scss',
         '!example/app/index.scss',
         '!example/app/vendor.scss'
       ], {read: false}), {
@@ -50,7 +51,7 @@ gulp.task('injector:css', ['clean', 'styles'], function () {
 });
 
 gulp.task('scripts', function () {
-  return gulp.src('example/{app,components}/**/*.js')
+  return gulp.src(['example/{app,components}/**/*.js', 'src/**/*.js'])
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'));
 });
@@ -81,7 +82,7 @@ gulp.task('partials', ['clean'], function () {
     .pipe(gulp.dest('.tmp/inject/'));
 });
 
-gulp.task('html', ['clean', 'wiredep', 'injector:css', 'injector:js', 'partials'], function () {
+gulp.task('html', ['clean', 'injector:css', 'injector:js', 'partials'], function () {
   var htmlFilter = $.filter('*.html');
   var jsFilter = $.filter('**/*.js');
   var cssFilter = $.filter('**/*.css');
