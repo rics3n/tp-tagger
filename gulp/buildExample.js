@@ -132,7 +132,7 @@ gulp.task('misc', ['clean'], function () {
 });
 
 gulp.task('clean', function (done) {
-  $.del(['dist/', '.tmp/tp_tagger'], done);
+  $.del(['example_dist/', '.tmp/'], done);
 });
 
 gulp.task('build:example', ['clean', 'html', 'images', 'fonts', 'misc']);
