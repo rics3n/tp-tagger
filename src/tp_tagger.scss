@@ -59,6 +59,9 @@ $BORDER_RADIUS: 0;
 
         width: 300px;
         color: $SUGGESTIONS_TEXT_COLOR;
+        height: 24px;
+        font-size: 16px;
+        line-height: 16px;
       }
       .tag-input:focus {
         box-shadow: none;
