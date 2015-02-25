@@ -68,7 +68,7 @@ gulp.task('tagger', ['tagger:clean', 'tagger:concat', 'tagger:styles'], function
 
 
 gulp.task('tagger:clean', function (done) {
-  $.del(['dist/', '.tmp/tp_tagger'], done);
+  $.del(['dist/', '.tmp/'], done);
 });
 
 gulp.task('build', ['tagger']);

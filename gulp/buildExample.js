@@ -7,7 +7,7 @@ var $ = require('gulp-load-plugins')({
 });
 
 gulp.task('styles', ['clean', 'injector:css:preprocessor'], function () {
-  return gulp.src(['example/app/index.scss', 'example/app/vendor.scss'])
+  return gulp.src(['example/src/app/index.scss', 'example/src/app/vendor.scss'])
     .pipe($.sass({style: 'expanded'}))
     .on('error', function handleError(err) {
       console.error(err.toString());
@@ -18,28 +18,28 @@ gulp.task('styles', ['clean', 'injector:css:preprocessor'], function () {
 });
 
 gulp.task('injector:css:preprocessor', ['clean'], function () {
-  return gulp.src('example/app/index.scss')
+  return gulp.src('example/src/app/index.scss')
     .pipe($.inject(gulp.src([
-        'example/{app,components}/**/*.scss',
+        'example/src/{app,components}/**/*.scss',
         'src/**/*.scss',
-        '!example/app/index.scss',
-        '!example/app/vendor.scss'
+        '!example/src/app/index.scss',
+        '!example/src/app/vendor.scss'
       ], {read: false}), {
       transform: function(filePath) {
-        filePath = filePath.replace('example/app/', '');
-        filePath = filePath.replace('example/components/', '../components/');
-        filePath = filePath.replace('src/', '../../src/');
+        filePath = filePath.replace('example/src/app/', '');
+        filePath = filePath.replace('example/src/components/', '../components/');
+        filePath = filePath.replace('src/', '../../../src/');
         return '@import \'' + filePath + '\';';
       },
       starttag: '// injector',
       endtag: '// endinjector',
       addRootSlash: false
     }))
-    .pipe(gulp.dest('example/app/'));
+    .pipe(gulp.dest('example/src/app/'));
 });
 
 gulp.task('injector:css', ['clean', 'styles'], function () {
-  return gulp.src('example/index.html')
+  return gulp.src('example/src/index.html')
     .pipe($.inject(gulp.src([
         '.tmp/{app,components}/**/*.css',
         '!.tmp/app/vendor.css'
@@ -47,37 +47,37 @@ gulp.task('injector:css', ['clean', 'styles'], function () {
       ignorePath: '.tmp',
       addRootSlash: false
     }))
-    .pipe(gulp.dest('example/'));
+    .pipe(gulp.dest('example/src/'));
 });
 
 gulp.task('scripts', function () {
-  return gulp.src(['example/{app,components}/**/*.js', 'src/**/*.js'])
+  return gulp.src(['example/src/{app,components}/**/*.js', 'src/**/*.js'])
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('injector:js', ['scripts', 'injector:css', 'clean'], function () {
-  return gulp.src('example/index.html')
+  return gulp.src('example/src/index.html')
     .pipe($.inject(gulp.src([
-      'example/{app,components}/**/*.js',
-      '!example/{app,components}/**/*.spec.js',
-      '!example/{app,components}/**/*.mock.js'
+      'example/src/{app,components}/**/*.js',
+      '!example/src/{app,components}/**/*.spec.js',
+      '!example/src/{app,components}/**/*.mock.js'
     ]).pipe($.angularFilesort()), {
       ignorePath: 'example',
       addRootSlash: false
     }))
-    .pipe(gulp.dest('example/'));
+    .pipe(gulp.dest('example/src/'));
 });
 
 gulp.task('partials', ['clean'], function () {
-  return gulp.src(['example/{app,components}/**/*.html', 'src/**/*.html'])
+  return gulp.src(['example/src/{app,components}/**/*.html', 'src/**/*.html'])
     .pipe($.minifyHtml({
       empty: true,
       spare: true,
       quotes: true
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
-      module: 'tpTaggerApp'
+      module: 'tpTagger'
     }))
     .pipe(gulp.dest('.tmp/inject/'));
 });
@@ -88,7 +88,7 @@ gulp.task('html', ['clean', 'injector:css', 'injector:js', 'partials'], function
   var cssFilter = $.filter('**/*.css');
   var assets;
 
-  return gulp.src('example/*.html')
+  return gulp.src('example/src/*.html')
     .pipe($.inject(gulp.src('.tmp/inject/templateCacheHtml.js', {read: false}), {
       starttag: '<!-- inject:partials -->',
       ignorePath: '.tmp',
@@ -105,34 +105,34 @@ gulp.task('html', ['clean', 'injector:css', 'injector:js', 'partials'], function
     .pipe(assets.restore())
     .pipe($.useref())
     .pipe($.revReplace())
-    .pipe(gulp.dest('example_dist'))
-    .pipe($.size({ title: 'example_dist', showFiles: true }));
+    .pipe(gulp.dest('example/dist'))
+    .pipe($.size({ title: 'example/dist', showFiles: true }));
 });
 
 gulp.task('images', ['clean'], function () {
-  return gulp.src('example/assets/images/**/*')
+  return gulp.src('example/src/assets/images/**/*')
     .pipe($.imagemin({
       optimizationLevel: 3,
       progressive: true,
       interlaced: true
     }))
-    .pipe(gulp.dest('example_dist/assets/images/'));
+    .pipe(gulp.dest('example/dist/assets/images/'));
 });
 
 gulp.task('fonts', ['clean'], function () {
   return gulp.src($.mainBowerFiles())
     .pipe($.filter('**/*.{eot,svg,ttf,woff}'))
     .pipe($.flatten())
-    .pipe(gulp.dest('example_dist/fonts/'));
+    .pipe(gulp.dest('example/dist/fonts/'));
 });
 
 gulp.task('misc', ['clean'], function () {
-  return gulp.src('example/**/*.ico')
-    .pipe(gulp.dest('example_dist/'));
+  return gulp.src('example/src/**/*.ico')
+    .pipe(gulp.dest('example/dist/'));
 });
 
 gulp.task('clean', function (done) {
-  $.del(['example_dist/', '.tmp/'], done);
+  $.del(['example/dist/', '.tmp/'], done);
 });
 
 gulp.task('build:example', ['clean', 'html', 'images', 'fonts', 'misc']);

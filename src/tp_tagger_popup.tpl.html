@@ -1,6 +1,6 @@
 <div class="tp-tagger-suggestions"  ng-show="isSuggestionsVisible">
   <ul>
-    <li ng-repeat="suggestion in suggestions" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)">
+    <li ng-repeat="suggestion in suggestions track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)">
       <div class="tp-text">{{suggestion}}</div>
       <div class="tp-break" ng-if="!$last"></div>
     </li>
