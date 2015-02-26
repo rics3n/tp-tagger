@@ -185,7 +185,7 @@ angular.module('tpTagger', [])
             } else if (scope.searchTag.length > 0) {
               //add the input
               scope.addTag(scope.searchTag);
-            } else if (scope.options.searchFunction && scope.selectedTags.length > 0) {
+            } else if (scope.options.searchFunction) {
               //if a search function is provided and at least one tag was added  -> search
               scope.search(scope.options.searchFunction);
             }
