@@ -49,16 +49,14 @@ angular.module('tpTagger', [])
 
         //the supplied search method must return a promise to indicate finish of loading
         $scope.search = function(callback) {
-          if ($scope.selectedTags.length >= 1) {
-            $scope.searching = true;
-            callback($scope.selectedTags).then(function() {
-              $log.debug('finshed searching');
-              $scope.searching = false;
-            }, function(reason) {
-              $log.error(reason);
-              $scope.searching = false;
-            });
-          }
+          $scope.searching = true;
+          callback($scope.selectedTags).then(function() {
+            $log.debug('finshed searching');
+            $scope.searching = false;
+          }, function(reason) {
+            $log.error(reason);
+            $scope.searching = false;
+          });
         };
 
         $scope.isActive = function(index) {
