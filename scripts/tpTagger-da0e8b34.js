@@ -5,14 +5,14 @@
  */
 
 angular.module('tpTagger', [])
-  .directive('tpTagger', function($timeout, $filter, $log) {
+  .directive('tpTagger', ["$timeout", "$filter", "$log", function($timeout, $filter, $log) {
     return {
       restrict: 'AE',
       templateUrl: 'tp_tagger.tpl.html',
       scope: {
         options: '='
       },
-      controller: function($scope) {
+      controller: ["$scope", function($scope) {
         $scope.hasFocus = false;
         $scope.isSuggestionsVisible = false;
         $scope.suggestions = [];
@@ -110,7 +110,7 @@ angular.module('tpTagger', [])
             $scope.hasError = false;
           }
         };
-      },
+      }],
       link: function(scope) {
         //SUPPORTED OPTIONS (OPTIONS)
         scope.options = scope.options || {};
@@ -134,8 +134,8 @@ angular.module('tpTagger', [])
         };
       }
     };
-  })
-  .directive('tpTaggerInput', function($log) {
+  }])
+  .directive('tpTaggerInput', ["$log", function($log) {
     //arrows up(38) / down(40), enter(13) and tab(9), esc(27), ctrl(17), s(83)
     var HOT_KEYS = [8, 9, 13, 17, 27];
     var HOT_KEYS_SUGGESTION = [38, 40];
@@ -252,14 +252,14 @@ angular.module('tpTagger', [])
         });
       }
     };
-  })
+  }])
   .directive('tpTaggerPopup', function() {
     return {
       restrict: 'A',
       replace: true,
       templateUrl: 'tp_tagger_popup.tpl.html'
     };
-  }).directive('tpFocus', function($timeout, $parse) {
+  }).directive('tpFocus', ["$timeout", "$parse", function($timeout, $parse) {
     return {
       link: function(scope, element, attrs) {
         var model = $parse(attrs.tpFocus);
@@ -275,4 +275,7 @@ angular.module('tpTagger', [])
         });
       }
     };
-  });
+  }]);
+
+angular.module("tpTagger").run(["$templateCache", function($templateCache) {$templateCache.put("tp_tagger.tpl.html","<div ng-click=\"setFocus = true\"><div class=\"tp-tagger-error-texts\" ng-show=\"hasError\"><span ng-show=\"uniqueError\">{{options.errors.notUniqueTag}}</span></div><div class=\"tp-tagger\"><div class=\"tp-tags-wrapper\"><div class=\"tp-tags\"><span class=\"tp-tag\" ng-repeat=\"tag in selectedTags track by $index\">{{ tag }}<span class=\"delete\" ng-click=\"deleteTag($index)\"><i class=\"fa fa-times\"></i></span></span> <input tp-tagger-input=\"\" ng-change=\"changeInput()\" type=\"text\" class=\"input input-text tp-tag-input\" placeholder=\"{{options.placeholderText}}\" ng-focus=\"hasFocus = true\" ng-blur=\"hasFocus = false\" tp-focus=\"setFocus\" ng-model=\"searchTag\"></div></div><div class=\"tp-btn-wrapper\"><button class=\"btn btn-primary btn-add\" ng-click=\"addTag(searchTag)\" ng-if=\"options.addBtnActive\"><i class=\"fa fa-plus\"></i></button> <button class=\"btn btn-primary btn-search\" ng-click=\"search(options.searchFunction)\" ng-if=\"options.searchFunction\" ng-disabled=\"searching\"><span ng-hide=\"searching\"><i class=\"fa fa-search\"></i></span> <span ng-show=\"searching\"><i class=\"fa fa-spinner fa-spin\"></i></span></button></div></div><div tp-tagger-popup=\"\"></div></div>");
+$templateCache.put("tp_tagger_popup.tpl.html","<div class=\"tp-tagger-suggestions\" ng-show=\"isSuggestionsVisible\"><ul><li ng-repeat=\"suggestion in suggestions track by $index\" ng-class=\"{active: isActive($index)}\" ng-mouseenter=\"selectActive($index)\"><div class=\"tp-text\">{{suggestion.name}}</div><div class=\"tp-break\" ng-if=\"!$last\"></div></li></ul></div>");}]);

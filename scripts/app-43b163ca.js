@@ -1,7 +1,11 @@
 'use strict';
 
+angular.module('tpTaggerApp', ['ngAnimate', 'ngTouch', 'ngSanitize', 'tpTagger']);
+
+'use strict';
+
 angular.module('tpTaggerApp')
-  .controller('MainCtrl', function($scope, $log, $q) {
+  .controller('MainCtrl', ["$scope", "$log", "$q", function($scope, $log, $q) {
     var search = function(searchValues) {
       $log.info('Executing search with tags: ' + searchValues);
       var deferred = $q.defer();
@@ -54,4 +58,4 @@ angular.module('tpTaggerApp')
       selectedTags: selectedTags3,
       dictionary: dictionary
     };
-  });
+  }]);
