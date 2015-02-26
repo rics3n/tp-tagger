@@ -16,13 +16,13 @@ angular.module('tpTaggerApp')
 
     var selectedTags = ['Hamburg', 'New York'];
     var selectedTags1 = ['Manila'];
-    var selectedTags2 = ['Buxtehude', 'Meppen', 'Berlin'];
+    var selectedTags2 = ['Buxtehude', 'Buxtehude', 'Berlin'];
     var selectedTags3 = [];
 
-    var dictionary = ['Hamburg', 'Berlin', 'Manila', 'New York', 'Buxtehude'];
+    var dictionary = [{name: 'Hamburg'}, {name: 'Berlin'}, {name: 'Manila'}, {name: 'New York'}, {name: 'San Francisco'}];
 
     for(var i=0; i<=1000; i++) {
-      dictionary.push(chance.city());
+      dictionary.push({name: chance.city()});
     }
 
     $scope.options = {

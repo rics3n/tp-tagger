@@ -150,7 +150,7 @@ angular.module('tpTagger', [])
             //add the input
             scope.addTag(scope.searchTag);
           } else if (scope.selectedSuggestionIndex >= 0) {
-            scope.addTag(scope.suggestions[scope.selectedSuggestionIndex]);
+            scope.addTag(scope.suggestions[scope.selectedSuggestionIndex].name);
           } else {
             scope.resetErrors();
           }
@@ -183,7 +183,7 @@ angular.module('tpTagger', [])
           if (mapOfKeyStrokes[13] || mapOfKeyStrokes[9]) {
             if (scope.selectedSuggestion) {
               //add the selected tag
-              scope.addTag(scope.selectedSuggestion);
+              scope.addTag(scope.selectedSuggestion.name);
             } else if (scope.searchTag.length > 0) {
               //add the input
               scope.addTag(scope.searchTag);
