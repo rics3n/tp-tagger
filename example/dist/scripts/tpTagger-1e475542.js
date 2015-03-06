@@ -20,6 +20,7 @@ angular.module('tpTagger', [])
         $scope.searching = false;
         $scope.selectedSuggestionIndex = -1;
         $scope.uniqueError = false;
+        $scope.maxTagLengthError = false;
         $scope.hasError = false;
 
         var setError = function(errorName, state) {
@@ -29,16 +30,21 @@ angular.module('tpTagger', [])
         };
 
         $scope.addTag = function(tag) {
-          if ((!$scope.options.uniqueTags || $scope.selectedLowerTags.indexOf(tag.toLowerCase()) === -1) && tag !== '') {
-            $scope.selectedTags.push(tag);
-            $scope.selectedLowerTags.push(tag.toLowerCase());
+          if(tag.length > $scope.options.maxTagLength) {
+            $log.info('tag too long');
+            setError('maxTagLengthError', true);
             $scope.searchTag = '';
-          } else if(tag !== ''){
+          } else if ($scope.options.uniqueTags && $scope.selectedLowerTags.indexOf(tag.toLowerCase()) !== -1) {
             $log.info('tag not unique');
             setError('uniqueError', true);
             $scope.searchTag = '';
-          } else {
+          } else if(tag === '') {
             $log.info('tag empty');
+          } else {
+            //add tag
+            $scope.selectedTags.push(tag);
+            $scope.selectedLowerTags.push(tag.toLowerCase());
+            $scope.searchTag = '';
           }
         };
 
@@ -115,6 +121,7 @@ angular.module('tpTagger', [])
         //minimal no of characters that needs to be entered before typeahead kicks-in
         scope.options.minChar = scope.options.minChar || 1;
         scope.options.maxResults = scope.options.maxResults || 10;
+        scope.options.maxTagLength = scope.options.maxTagLength || 50;
         //array of preselected Tags
         scope.selectedTags = scope.options.selectedTags || [];
         scope.selectedLowerTags = [];
@@ -128,7 +135,8 @@ angular.module('tpTagger', [])
         scope.options.uniqueTags = scope.options.uniqueTags || true;
         //custom error message can be provided
         scope.options.errors = scope.options.errors || {
-          notUniqueTag: 'The tag which you tried to add is not unique. You may only add a Tag once.'
+          notUniqueTag: 'The tag which you tried to add is not unique. You may only add a Tag once.',
+          maxTagLength: 'The tag which you tried to add is too long. Only ' + scope.options.maxTagLength + ' characters are allowed.'
         };
       }
     };
@@ -158,11 +166,11 @@ angular.module('tpTagger', [])
 
         //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27), ctrl(17), s(83), remove(8)
         element.bind('keydown', function(evt) {
-          $log.info(evt.which);
+          //$log.info(evt.which);
             //typeahead is open and an "interesting" key was pressed
           if ((!scope.isSuggestionsVisible || HOT_KEYS_SUGGESTION.indexOf(evt.which) === -1) && HOT_KEYS.indexOf(evt.which) === -1) {
             if (!(mapOfKeyStrokes[17] && evt.which === 83)) {
-              $log.debug('not important key pressed');
+              //$log.debug('not important key pressed');
               mapOfKeyStrokes = {};
               return;
             }
@@ -275,5 +283,5 @@ angular.module('tpTagger', [])
     };
   }]);
 
-angular.module("tpTagger").run(["$templateCache", function($templateCache) {$templateCache.put("tp_tagger.tpl.html","<div ng-click=\"setFocus = true\"><div class=\"tp-tagger-error-texts\" ng-show=\"hasError\"><span ng-show=\"uniqueError\">{{options.errors.notUniqueTag}}</span></div><div class=\"tp-tagger\"><div class=\"tp-tags-wrapper\"><div class=\"tp-tags\"><span class=\"tp-tag\" ng-repeat=\"tag in selectedTags track by $index\">{{ tag }}<span class=\"delete\" ng-click=\"deleteTag($index)\"><i class=\"fa fa-times\"></i></span></span> <input tp-tagger-input=\"\" ng-change=\"changeInput()\" type=\"text\" class=\"input input-text tp-tag-input\" placeholder=\"{{options.placeholderText}}\" ng-focus=\"hasFocus = true\" ng-blur=\"hasFocus = false\" tp-focus=\"setFocus\" ng-model=\"searchTag\"></div></div><div class=\"tp-btn-wrapper\"><button class=\"btn btn-primary btn-add\" ng-click=\"addTag(searchTag)\" ng-if=\"options.addBtnActive\"><i class=\"fa fa-plus\"></i></button> <button class=\"btn btn-primary btn-search\" ng-click=\"search(options.searchFunction)\" ng-if=\"options.searchFunction\" ng-disabled=\"searching\"><span ng-hide=\"searching\"><i class=\"fa fa-search\"></i></span> <span ng-show=\"searching\"><i class=\"fa fa-spinner fa-spin\"></i></span></button></div></div><div tp-tagger-popup=\"\"></div></div>");
+angular.module("tpTagger").run(["$templateCache", function($templateCache) {$templateCache.put("tp_tagger.tpl.html","<div ng-click=\"setFocus = true\"><div class=\"tp-tagger-error-texts\" ng-show=\"hasError\"><span ng-show=\"uniqueError\">{{options.errors.notUniqueTag}}</span> <span ng-show=\"maxTagLengthError\">{{options.errors.maxTagLength}}</span></div><div class=\"tp-tagger\"><div class=\"tp-tags-wrapper\"><div class=\"tp-tags\"><span class=\"tp-tag\" ng-repeat=\"tag in selectedTags track by $index\">{{ tag }}<span class=\"delete\" ng-click=\"deleteTag($index)\"><i class=\"fa fa-times\"></i></span></span> <input tp-tagger-input=\"\" ng-change=\"changeInput()\" type=\"text\" class=\"input input-text tp-tag-input\" placeholder=\"{{options.placeholderText}}\" ng-focus=\"hasFocus = true\" ng-blur=\"hasFocus = false\" tp-focus=\"setFocus\" ng-model=\"searchTag\"></div></div><div class=\"tp-btn-wrapper\"><button class=\"btn btn-primary btn-add\" ng-click=\"addTag(searchTag)\" ng-if=\"options.addBtnActive\"><i class=\"fa fa-plus\"></i></button> <button class=\"btn btn-primary btn-search\" ng-click=\"search(options.searchFunction)\" ng-if=\"options.searchFunction\" ng-disabled=\"searching\"><span ng-hide=\"searching\"><i class=\"fa fa-search\"></i></span> <span ng-show=\"searching\"><i class=\"fa fa-spinner fa-spin\"></i></span></button></div></div><div tp-tagger-popup=\"\"></div></div>");
 $templateCache.put("tp_tagger_popup.tpl.html","<div class=\"tp-tagger-suggestions\" ng-show=\"isSuggestionsVisible\"><ul><li ng-repeat=\"suggestion in suggestions track by $index\" ng-class=\"{active: isActive($index)}\" ng-mouseenter=\"selectActive($index)\"><div class=\"tp-text\">{{suggestion.name}}</div><div class=\"tp-break\" ng-if=\"!$last\"></div></li></ul></div>");}]);
