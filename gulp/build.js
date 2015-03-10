@@ -6,15 +6,22 @@ var $ = require('gulp-load-plugins')({
   pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
 });
 
+var browserslist = require('browserslist');
+
+
 gulp.task('tagger:styles', function () {
+  var browsers = browserslist( ['> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1', 'Safari 6'] );
+  console.log(browsers);
   return gulp.src(['src/tp_tagger.scss'])
     .pipe($.sass({style: 'expanded'}))
     .on('error', function handleError(err) {
       console.error(err.toString());
       this.emit('end');
     })
-    .pipe($.autoprefixer())
-    .pipe(gulp.dest('.tmp/tp_tagger/'));
+    .pipe($.autoprefixer({
+      browsers: ['> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1', 'Safari 6']
+    }))
+    .pipe(gulp.dest('.tmp/tp_tagger'));
 });
 
 gulp.task('tagger:partials', function () {
