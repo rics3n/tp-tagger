@@ -141,7 +141,7 @@ angular.module('tpTagger', [])
       }
     };
   }])
-  .directive('tpTaggerInput', ["$log", function($log) {
+  .directive('tpTaggerInput', ["$log", "$window", function($log, $window) {
     //arrows up(38) / down(40), enter(13) and tab(9), esc(27), ctrl(17), s(83)
     var HOT_KEYS = [8, 9, 13, 17, 27];
     var HOT_KEYS_SUGGESTION = [38, 40];
@@ -181,8 +181,11 @@ angular.module('tpTagger', [])
 
           evt.preventDefault();
 
-          var e = e || event; // to deal with IE
-          mapOfKeyStrokes[evt.which] = e.type === 'keydown';
+          if (!evt) {
+            evt = $window.event;
+          }
+
+          mapOfKeyStrokes[evt.which] = evt.type === 'keydown';
 
           //if enter or tab is pressed add the selected suggestion or the value entered to the
           //selectedTags array

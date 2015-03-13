@@ -1,6 +1,6 @@
 {
   "name": "tp-tagger",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {},
   "devDependencies": {
     "gulp": "~3.8.10",
