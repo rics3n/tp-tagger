@@ -74,7 +74,7 @@ angular.module('tpTagger', [])
         };
 
         $scope.changeInput = function() {
-          $log.info($scope.searchTag);
+          //$log.info($scope.searchTag);
           if ($scope.searchTag.length > $scope.options.minChar) {
             $scope.suggestions = $filter('filter')($scope.dictionary, $scope.searchTag) || [];
             $scope.suggestions = $scope.suggestions.slice(0, $scope.options.maxResults);
@@ -143,7 +143,7 @@ angular.module('tpTagger', [])
   }])
   .directive('tpTaggerInput', ["$log", "$window", function($log, $window) {
     //arrows up(38) / down(40), enter(13) and tab(9), esc(27), ctrl(17), s(83)
-    var HOT_KEYS = [8, 9, 13, 17, 27];
+    var HOT_KEYS = [8, 9, 13, 17, 27, 188];
     var HOT_KEYS_SUGGESTION = [38, 40];
     return {
       restrict: 'A',
@@ -166,7 +166,7 @@ angular.module('tpTagger', [])
 
         //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27), ctrl(17), s(83), remove(8)
         element.bind('keydown', function(evt) {
-          //$log.info(evt.which);
+          $log.info(evt.which);
             //typeahead is open and an "interesting" key was pressed
           if ((!scope.isSuggestionsVisible || HOT_KEYS_SUGGESTION.indexOf(evt.which) === -1) && HOT_KEYS.indexOf(evt.which) === -1) {
             if (!(mapOfKeyStrokes[17] && evt.which === 83)) {
@@ -187,9 +187,10 @@ angular.module('tpTagger', [])
 
           mapOfKeyStrokes[evt.which] = evt.type === 'keydown';
 
-          //if enter or tab is pressed add the selected suggestion or the value entered to the
+          //if enter, tab or comma is pressed add the selected suggestion or the value entered to the
           //selectedTags array
-          if (mapOfKeyStrokes[13] || mapOfKeyStrokes[9]) {
+          //if nothing is entered the search function will be executed
+          if (mapOfKeyStrokes[13] || mapOfKeyStrokes[9] || mapOfKeyStrokes[188]) {
             if (scope.selectedSuggestion) {
               //add the selected tag
               scope.addTag(scope.selectedSuggestion.name);
