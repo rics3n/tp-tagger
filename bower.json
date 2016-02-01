@@ -1,6 +1,6 @@
 {
-  "name": "angular",
-  "version": "1.3.20",
+  "name": "tp-tagger",
+  "version": "1.0.0",
   "main": "./dist/tpTagger.js",
   "ignore": [],
   "dependencies": {

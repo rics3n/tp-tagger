@@ -1,6 +1,6 @@
 {
   "name": "tp-tagger",
-  "version": "0.1",
+  "version": "1.0.0",
   "description": "Angular Tagger Directive",
   "main": "dist/tpTagger.js",
   "scripts": {
