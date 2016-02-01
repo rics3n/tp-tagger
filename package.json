@@ -1,7 +1,25 @@
 {
   "name": "tp-tagger",
-  "version": "0.0.1",
-  "dependencies": {},
+  "version": "0.1",
+  "description": "Angular Tagger Directive",
+  "main": "dist/tpTagger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rics3n/tp-tagger.git"
+  },
+  "keywords": [
+    "tagger",
+    "angular"
+  ],
+  "author": "rics3n",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rics3n/tp-tagger/issues"
+  },
+  "homepage": "https://rics3n.github.io/tp-tagger",
   "devDependencies": {
     "gulp": "~3.8.10",
     "gulp-autoprefixer": "~2.0.0",
@@ -40,7 +58,6 @@
     "protractor": "~1.4.0",
     "uglify-save-license": "~0.4.1"
   },
-  "engines": {
-    "node": ">=0.10.0"
-  }
+  "dependencies": {}
 }
+
