@@ -31,26 +31,35 @@ angular.module('tpTagger', [])
 
         $scope.addTag = function(tag) {
           if(tag.length > $scope.options.maxTagLength) {
-            $log.info('tag too long');
+            $log.debug('tag too long');
             setError('maxTagLengthError', true);
             $scope.searchTag = '';
           } else if ($scope.options.uniqueTags && $scope.selectedLowerTags.indexOf(tag.toLowerCase()) !== -1) {
-            $log.info('tag not unique');
+            $log.debug('tag not unique');
             setError('uniqueError', true);
             $scope.searchTag = '';
           } else if(tag === '') {
-            $log.info('tag empty');
+            $log.debug('tag empty');
           } else {
             //add tag
             $scope.selectedTags.push(tag);
             $scope.selectedLowerTags.push(tag.toLowerCase());
             $scope.searchTag = '';
+            if($scope.options.addFunction) {
+              $scope.options.addFunction(tag);
+            }
           }
         };
 
         $scope.deleteTag = function(index) {
+          var tag = angular.copy($scope.selectedTags[index]);
+
           $scope.selectedTags.splice(index, 1);
           $scope.selectedLowerTags.splice(index, 1);
+
+          if($scope.options.deleteFunction) {
+            $scope.options.deleteFunction(tag);
+          }
         };
 
         //the supplied search method must return a promise to indicate finish of loading
@@ -166,8 +175,8 @@ angular.module('tpTagger', [])
 
         //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27), ctrl(17), s(83), remove(8)
         element.bind('keydown', function(evt) {
-          $log.info(evt.which);
-            //typeahead is open and an "interesting" key was pressed
+          //$log.info(evt.which);
+          //typeahead is open and an "interesting" key was pressed
           if ((!scope.isSuggestionsVisible || HOT_KEYS_SUGGESTION.indexOf(evt.which) === -1) && HOT_KEYS.indexOf(evt.which) === -1) {
             if (!(mapOfKeyStrokes[17] && evt.which === 83)) {
               //$log.debug('not important key pressed');
