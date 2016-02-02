@@ -52,6 +52,8 @@ angular.module('tpTagger', [])
         };
 
         $scope.deleteTag = function(index) {
+          var tag = angular.copy($scope.selectedTags[index]);
+
           $scope.selectedTags.splice(index, 1);
           $scope.selectedLowerTags.splice(index, 1);
 

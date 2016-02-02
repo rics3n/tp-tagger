@@ -14,10 +14,20 @@ angular.module('tpTaggerApp')
       return deferred.promise;
     };
 
+    var add = function(tag) {
+        $log.info('Add tag: ' + tag);
+    };
+
+    var remove = function(tag) {
+        $log.info('Remove tag: ' + tag);
+    };
+
     var selectedTags = ['Hamburg', 'New York'];
     var selectedTags1 = ['Manila'];
     var selectedTags2 = ['Buxtehude', 'Buxtehude', 'Berlin'];
     var selectedTags3 = [];
+    var selectedTags4 = ['Buxtehude', 'Buxtehude', 'Berlin'];
+    var selectedTags5 = ['Buxtehude', 'Buxtehude', 'Berlin'];
 
     var dictionary = [{name: 'Hamburg'}, {name: 'Berlin'}, {name: 'Manila'}, {name: 'New York'}, {name: 'San Francisco'}];
 
@@ -52,6 +62,22 @@ angular.module('tpTaggerApp')
       placeholderText: 'Type something...',
       addBtnActive: false,
       selectedTags: selectedTags3,
+      dictionary: dictionary
+    };
+
+    $scope.optionsAddFunction = {
+      placeholderText: 'Type something...',
+      addBtnActive: true,
+      addFunction: add,
+      selectedTags: selectedTags4,
+      dictionary: dictionary
+    };
+
+    $scope.optionsDeleteFunction = {
+      placeholderText: 'Type something...',
+      addBtnActive: true,
+      deleteFunction: remove,
+      selectedTags: selectedTags5,
       dictionary: dictionary
     };
   });
