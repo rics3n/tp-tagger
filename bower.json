@@ -1,6 +1,6 @@
 {
   "name": "tp-tagger",
-  "version": "v1.0.1",
+  "version": "v1.0.2",
   "main": "./dist/tpTagger.js",
   "ignore": [],
   "dependencies": {
