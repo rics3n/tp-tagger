@@ -188,13 +188,16 @@ angular.module('tpTagger', [])
             return;
           }
 
-          evt.preventDefault();
-
           if (!evt) {
             evt = $window.event;
           }
 
           mapOfKeyStrokes[evt.which] = evt.type === 'keydown';
+
+          if(!mapOfKeyStrokes[9]) {
+            //tab press should be handled by default event
+            evt.preventDefault();
+          }
 
           //if enter, tab or comma is pressed add the selected suggestion or the value entered to the
           //selectedTags array
@@ -203,12 +206,15 @@ angular.module('tpTagger', [])
             if (scope.selectedSuggestion) {
               //add the selected tag
               scope.addTag(scope.selectedSuggestion.name);
+              evt.preventDefault();
             } else if (scope.searchTag.length > 0) {
               //add the input
               scope.addTag(scope.searchTag);
-            } else if (scope.options.searchFunction) {
+              evt.preventDefault();
+            } else if (scope.options.searchFunction && !mapOfKeyStrokes[9]) {
               //if a search function is provided and at least one tag was added  -> search
               scope.search(scope.options.searchFunction);
+              evt.preventDefault();
             }
 
             scope.changeSuggestionVisible(false);
