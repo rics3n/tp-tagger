@@ -1,22 +1,21 @@
-$BORDER_COLOR:  rgba(0, 0, 0, 0.2);
-$BACKGROUND_COLOR: #fff;
+$tp-tagger__inputfield--bordercolor:  rgba(0, 0, 0, 0.2);
+$tp-tagger__tagcontainer--backgroundcolor: #fff;
 
-$SUGGESTIONS_TEXT_COLOR: #646464;
-$SUGGESTIONS_BACKGROUND_COLOR: #3399cc;
+$tp-tagger__inputfield--textcolor: #646464;
+$tp-tagger__suggestions--backgroundcolor: #3399cc;
 
-$TAG_BACKGROUND_COLOR: #ccc;
-$TAG_TEXT_COLOR: #c83;
-$TAG_CLOSE_COLOR: #000;
-$INPUT_TEXT_COLOR: #c83;
+$tp-tagger__tag--backgroundcolor: #ccc;
+$tp-tagger__tag--textcolor: #c83;
+$tp-tagger__tag--closingiconcolor: #000;
 
-$BTN_ADD_COLOR: #fff;
-$BTN_ADD_TEXT_COLOR: #CC8833;
-$BTN_ADD_BORDER_COLOR: #CC8833;
-$BTN_SEARCH_COLOR: #CC8833;
-$BTN_SEARCH_TEXT_COLOR: #fff;
-$BTN_SEARCH_BORDER_COLOR: #CC8833;
+$tp-tagger__addbutton--backgroundcolor: #fff;
+$tp-tagger__addbutton--textcolor: #CC8833;
+$tp-tagger__addbutton--bordercolor: #CC8833;
+$tp-tagger__searchbutton--backgroundcolor: #CC8833;
+$tp-tagger__searchbutton--textcolor: #fff;
+$tp-tagger__searchbutton--bordercolor: #CC8833;
 
-$BORDER_RADIUS: 0;
+$tp-tagger__button--borderradius: 0;
 
 .tp-tagger {
   flex: 1 1 0%;
@@ -25,17 +24,17 @@ $BORDER_RADIUS: 0;
   flex-direction: row;
   margin-top: 15px;
 
-  .tp-tags-wrapper {
+  &__tagcontainer {
     flex: 1;
     order: 2;
 
-    .tp-tags {
+    .tp-tagger__tags {
       display: block;
       position: relative;
-      background-color: $BACKGROUND_COLOR;
+      background-color: $tp-tagger__tagcontainer--backgroundcolor;
       padding: 0 10px;
-      border: 1px solid $BORDER_COLOR;
-      border-radius: $BORDER_RADIUS;
+      border: 1px solid $tp-tagger__inputfield--bordercolor;
+      border-radius: $tp-tagger__button--borderradius;
       box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
       transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
       min-height: 39px;
@@ -43,12 +42,11 @@ $BORDER_RADIUS: 0;
 
       font-size: 16px;
       font-weight: normal;
-      color: $INPUT_TEXT_COLOR;
       cursor: text;
       font-family: sans-serif;
       text-align: left;
 
-      .tp-tag-input {
+      .tp-tagger__inputfield {
         display: inline-block;
         border: none;
         outline: none;
@@ -59,17 +57,17 @@ $BORDER_RADIUS: 0;
         line-height: inherit;
 
         width: 300px;
-        color: $SUGGESTIONS_TEXT_COLOR;
+        color: $tp-tagger__inputfield--textcolor;
         height: 24px;
         font-size: 16px;
         line-height: 16px;
       }
-      .tag-input:focus {
+      .tp-tagger__inputfield:focus {
         box-shadow: none;
         outline: none;
 
       }
-      .tp-tag {
+      .tp-tagger__tag {
         display: inline-block;
 
         font-size: 14px;
@@ -78,30 +76,31 @@ $BORDER_RADIUS: 0;
         padding: 6px 10px 4px 10px;
         margin:3px 5px 3px 0;
 
-        color: $TAG_TEXT_COLOR;
-        background-color: $TAG_BACKGROUND_COLOR;
+        color: $tp-tagger__tag--textcolor;
+        background-color: $tp-tagger__tag--backgroundcolor;
 
-        .delete {
+        .tp-tagger__tag--delete {
           margin-left: 5px;
           cursor: pointer;
-          color: $TAG_CLOSE_COLOR;
+          color: $tp-tagger__tag--closingiconcolor;
           opacity: 0.5;
         }
       }
     }
 
   }
-  .tp-btn-wrapper {
+  &__buttoncontainer {
     order: 2;
     display: flex;
     flex-direction: row;
 
+    /* Konnte nicht ohne Darstellungsfehler geändert werden, Bootstrap Namespace? */
     .btn {
       margin: 0 0 0 5px;
       font-size: 14px;
       border-radius: 3px;
       padding: 9px 14px;
-      border-radius: $BORDER_RADIUS;
+      border-radius: $tp-tagger__button--borderradius;
       height: 41px;
     }
 
@@ -110,16 +109,18 @@ $BORDER_RADIUS: 0;
       cursor: default;
     }
 
-    .btn-add {
-      color: $BTN_ADD_TEXT_COLOR;
-      background-color: $BTN_ADD_COLOR;
-      border-color: $BTN_ADD_BORDER_COLOR;
+    @mixin tp-tagger__buttons ($color, $background-color, $border-color) {
+      color: $tp-tagger__addbutton--textcolor;
+      background-color: $tp-tagger__addbutton--backgroundcolor;
+      border-color: $tp-tagger__addbutton--bordercolor;
     }
 
-    .btn-search {
-      color: $BTN_SEARCH_TEXT_COLOR;
-      background-color: $BTN_SEARCH_COLOR;
-      border-color: $BTN_SEARCH_BORDER_COLOR;
+    .tp-tagger__addbutton {
+      @include tp-tagger__buttons($tp-tagger__addbutton--textcolor, $tp-tagger__addbutton--backgroundcolor, $tp-tagger__addbutton--bordercolor);
+    }
+
+    .tp-tagger__searchbutton {
+      @include tp-tagger__buttons($tp-tagger__searchbutton--textcolor, $tp-tagger__searchbutton--backgroundcolor, $tp-tagger__searchbutton--bordercolor);
     }
 
     .fa-spin {
@@ -129,13 +130,14 @@ $BORDER_RADIUS: 0;
   }
 }
 
+/* nicht geändert, da nicht in tp_tagger.tpl.html vorhanden (Abhängigkeit) */
 .tp-tagger-suggestions {
   display: block;
   position: absolute;
 
-  background-color: $BACKGROUND_COLOR;
-  border: 1px solid $BORDER_COLOR;
-  border-radius: $BORDER_RADIUS;
+  background-color: $tp-tagger__tagcontainer--backgroundcolor;
+  border: 1px solid $tp-tagger__inputfield--bordercolor;
+  border-radius: $tp-tagger__button--borderradius;
   box-shadow: 0 5px 10px rgba(0,0,0,.2);
 
   padding: 8px 0;
@@ -153,12 +155,12 @@ $BORDER_RADIUS: 0;
     li {
       font-size: 18px;
       line-height: 24px;
-      color: $SUGGESTIONS_TEXT_COLOR;
+      color: $tp-tagger__inputfield--textcolor;
       padding: 10px 0 5px 20px;
     }
 
     li.active {
-      background-color: $SUGGESTIONS_BACKGROUND_COLOR;
+      background-color: $tp-tagger__suggestions--backgroundcolor;
     }
 
     .tp-break {
@@ -167,10 +169,10 @@ $BORDER_RADIUS: 0;
   }
 }
 
-.tp-tagger-error-texts {
+.tp-tagger__errortexts {
   position: absolute;
   margin-top: -25px;
   margin-left: 15px;
   font-size: 14px;
-  color: $TAG_TEXT_COLOR;
+  color: $tp-tagger__tag--textcolor;
 }
