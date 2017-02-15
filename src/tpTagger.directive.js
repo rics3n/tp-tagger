@@ -13,15 +13,28 @@ angular.module('tpTagger', [])
         options: '='
       },
       controller: function($scope) {
+        //SUPPORTED OPTIONS (OPTIONS)
+        $scope.options = $scope.options || {};
+
+        //should the user only be able to add a tag once
+        $scope.selectedTags = [];
+        $scope.selectedLowerTags = [];
+        $scope.options.uniqueTags = $scope.options.uniqueTags || true;
+       
+
         $scope.hasFocus = false;
         $scope.isSuggestionsVisible = false;
         $scope.suggestions = [];
-        $scope.searchTag = '';
         $scope.searching = false;
+        $scope.maxChips = $scope.options.maxChips || 5;
         $scope.selectedSuggestionIndex = -1;
         $scope.uniqueError = false;
         $scope.maxTagLengthError = false;
         $scope.hasError = false;
+            //Max chips definition
+        $scope.maxChips = 5;
+        //The keys to separate chips with
+        $scope.separatorKeys = [188];
 
         var setError = function(errorName, state) {
           //it is only possible to show one error
@@ -30,33 +43,36 @@ angular.module('tpTagger', [])
         };
 
         $scope.addTag = function(tag) {
+          tag = {
+            name: tag,
+            order: '12'
+          }
+          if($scope.selectedTags.length == $scope.maxChips-1){
+            $log.debug('Max chips amount achieved');
+          }
           if(tag.length > $scope.options.maxTagLength) {
             $log.debug('tag too long');
             setError('maxTagLengthError', true);
-            $scope.searchTag = '';
-          } else if ($scope.options.uniqueTags && $scope.selectedLowerTags.indexOf(tag.toLowerCase()) !== -1) {
+            return null;
+          } else if ($scope.options.uniqueTags && $scope.selectedLowerTags.indexOf(tag.name.toLowerCase()) !== -1) {
             $log.debug('tag not unique');
             setError('uniqueError', true);
-            $scope.searchTag = '';
+            return null;
           } else if(tag === '') {
             $log.debug('tag empty');
+            return null;
           } else {
             //add tag
             $scope.selectedTags.push(tag);
-            $scope.selectedLowerTags.push(tag.toLowerCase());
-            $scope.searchTag = '';
+            $scope.selectedLowerTags.push(tag.name.toLowerCase());
             if($scope.options.addFunction) {
               $scope.options.addFunction(tag);
             }
+            return undefined;
           }
         };
 
         $scope.deleteTag = function(index) {
-          var tag = angular.copy($scope.selectedTags[index]);
-
-          $scope.selectedTags.splice(index, 1);
-          $scope.selectedLowerTags.splice(index, 1);
-
           if($scope.options.deleteFunction) {
             $scope.options.deleteFunction(tag);
           }
@@ -73,38 +89,6 @@ angular.module('tpTagger', [])
             $scope.searching = false;
           });
         };
-
-        $scope.isActive = function(index) {
-          return index === $scope.selectedSuggestionIndex;
-        };
-
-        $scope.selectActive = function(index) {
-          $scope.selectedSuggestionIndex = index;
-        };
-
-        $scope.changeInput = function() {
-          //$log.info($scope.searchTag);
-          if ($scope.searchTag.length > $scope.options.minChar) {
-            $scope.suggestions = $filter('filter')($scope.dictionary, $scope.searchTag) || [];
-            $scope.suggestions = $scope.suggestions.slice(0, $scope.options.maxResults);
-            //check if suggestions view should be open
-            if ($scope.suggestions.length >= 1) {
-              $scope.changeSuggestionVisible(true);
-            } else {
-              $scope.changeSuggestionVisible(false);
-            }
-
-            //$scope.$digest();
-          } else {
-            if ($scope.isSuggestionsVisible) {
-              $scope.changeSuggestionVisible(false);
-              //scope.$digest();
-            }
-          }
-
-          $scope.resetErrors();
-        };
-
 
         $scope.changeSuggestionVisible = function(visible) {
           if (visible) {
@@ -125,156 +109,8 @@ angular.module('tpTagger', [])
         };
       },
       link: function(scope) {
-        //SUPPORTED OPTIONS (OPTIONS)
-        scope.options = scope.options || {};
-        //minimal no of characters that needs to be entered before typeahead kicks-in
-        scope.options.minChar = scope.options.minChar || 1;
-        scope.options.maxResults = scope.options.maxResults || 10;
-        scope.options.maxTagLength = scope.options.maxTagLength || 50;
-        //array of preselected Tags
-        scope.selectedTags = scope.options.selectedTags || [];
-        scope.selectedLowerTags = [];
-        //copy lower case version to seperate array
-        for(var i=0; i<scope.selectedTags.length; i++) {
-          scope.selectedLowerTags.push(scope.selectedTags[i].toLowerCase());
-        }
-        //array of tag to search for suggestions
-        scope.dictionary = scope.options.dictionary || [];
-        //should the user only be able to add a tag once
-        scope.options.uniqueTags = scope.options.uniqueTags || true;
-        //custom error message can be provided
-        scope.options.errors = scope.options.errors || {
-          notUniqueTag: 'The tag which you tried to add is not unique. You may only add a Tag once.',
-          maxTagLength: 'The tag which you tried to add is too long. Only ' + scope.options.maxTagLength + ' characters are allowed.'
-        };
-      }
-    };
-  })
-  .directive('tpTaggerInput', function($log, $window) {
-    //arrows up(38) / down(40), enter(13) and tab(9), esc(27), ctrl(17), s(83)
-    var HOT_KEYS = [8, 9, 13, 17, 27, 188];
-    var HOT_KEYS_SUGGESTION = [38, 40];
-    return {
-      restrict: 'A',
-      require: '^ngModel',
-      link: function(scope, element) {
-        var mapOfKeyStrokes = {};
-
-        element.bind('blur', function() {
-          if (scope.searchTag.length > 0 && scope.selectedSuggestionIndex < 0) {
-            //add the input
-            scope.addTag(scope.searchTag);
-          } else if (scope.selectedSuggestionIndex >= 0) {
-            scope.addTag(scope.suggestions[scope.selectedSuggestionIndex].name);
-          } else {
-            scope.resetErrors();
-          }
-
-          scope.changeSuggestionVisible(false);
-        });
-
-        //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27), ctrl(17), s(83), remove(8)
-        element.bind('keydown', function(evt) {
-          //$log.info(evt.which);
-          //typeahead is open and an "interesting" key was pressed
-          if ((!scope.isSuggestionsVisible || HOT_KEYS_SUGGESTION.indexOf(evt.which) === -1) && HOT_KEYS.indexOf(evt.which) === -1) {
-            if (!(mapOfKeyStrokes[17] && evt.which === 83)) {
-              //$log.debug('not important key pressed');
-              mapOfKeyStrokes = {};
-              return;
-            }
-          } else if (evt.which === 8 && scope.searchTag !== '') {
-            mapOfKeyStrokes = {};
-            return;
-          }
-
-          if (!evt) {
-            evt = $window.event;
-          }
-
-          mapOfKeyStrokes[evt.which] = evt.type === 'keydown';
-
-          if(!mapOfKeyStrokes[9]) {
-            //tab press should be handled by default event
-            evt.preventDefault();
-          }
-
-          //if enter, tab or comma is pressed add the selected suggestion or the value entered to the
-          //selectedTags array
-          //if nothing is entered the search function will be executed
-          if (mapOfKeyStrokes[13] || mapOfKeyStrokes[9] || mapOfKeyStrokes[188]) {
-            if (scope.selectedSuggestion) {
-              //add the selected tag
-              scope.addTag(scope.selectedSuggestion.name);
-              evt.preventDefault();
-            } else if (scope.searchTag.length > 0) {
-              //add the input
-              scope.addTag(scope.searchTag);
-              evt.preventDefault();
-            } else if (scope.options.searchFunction && !mapOfKeyStrokes[9]) {
-              //if a search function is provided and at least one tag was added  -> search
-              scope.search(scope.options.searchFunction);
-              evt.preventDefault();
-            }
-
-            scope.changeSuggestionVisible(false);
-
-            scope.$digest();
-            //do nothing if no suggestion is selected or the entered text has not more than 2 characters
-            mapOfKeyStrokes = {};
-          }
-
-          // if the combination of Ctrl + s is pressed execute a search
-          else if (mapOfKeyStrokes[17] && mapOfKeyStrokes[83]) {
-            $log.info('Search for tags');
-            evt.preventDefault();
-            if (scope.options.searchFunction) {
-              scope.search(scope.options.searchFunction);
-            }
-            mapOfKeyStrokes = {};
-          }
-
-          //if escape is pressed close the suggestion view and set selected suggestion to undefined
-          else if (mapOfKeyStrokes[27]) {
-            scope.changeSuggestionVisible(false);
-            scope.$digest();
-            mapOfKeyStrokes = {};
-          } else if (mapOfKeyStrokes[40]) { //arrow down -> typeahead selected one down
-            if (scope.isSuggestionsVisible) {
-              if (scope.selectedSuggestionIndex < scope.suggestions.length - 1 && scope.selectedSuggestionIndex >= 0) {
-                scope.selectedSuggestionIndex = scope.selectedSuggestionIndex + 1;
-              } else {
-                scope.selectedSuggestionIndex = 0;
-              }
-
-              scope.selectedSuggestion = scope.suggestions[scope.selectedSuggestionIndex];
-              scope.$digest();
-            }
-
-            mapOfKeyStrokes = {};
-          } else if (mapOfKeyStrokes[8] && scope.searchTag === '' && scope.selectedTags.length > 0) {
-            scope.deleteTag(scope.selectedTags.length - 1);
-            mapOfKeyStrokes = {};
-            scope.$digest();
-          } else if (mapOfKeyStrokes[38]) { //arrow up -> set typeahead selected on up
-            if (scope.isSuggestionsVisible) {
-              if (scope.selectedSuggestionIndex > 0) {
-                scope.selectedSuggestionIndex = scope.selectedSuggestionIndex - 1;
-              } else {
-                scope.selectedSuggestionIndex = scope.suggestions.length - 1;
-              }
-
-              scope.selectedSuggestion = scope.suggestions[scope.selectedSuggestionIndex];
-              scope.$digest();
-            }
-
-            mapOfKeyStrokes = {};
-          } else {
-            if (!mapOfKeyStrokes[17]) {
-              mapOfKeyStrokes = {};
-            }
-          }
-        });
+        
+        
       }
     };
   })
@@ -283,21 +119,5 @@ angular.module('tpTagger', [])
       restrict: 'A',
       replace: true,
       templateUrl: 'tp_tagger_popup.tpl.html'
-    };
-  }).directive('tpFocus', function($timeout, $parse) {
-    return {
-      link: function(scope, element, attrs) {
-        var model = $parse(attrs.tpFocus);
-        scope.$watch(model, function(value) {
-          if (value === true) {
-            $timeout(function() {
-              element[0].focus();
-            });
-          }
-        });
-        element.bind('blur', function() {
-          scope.$apply(model.assign(scope, false));
-        });
-      }
     };
   });

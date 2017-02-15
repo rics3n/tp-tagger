@@ -22,12 +22,12 @@ angular.module('tpTaggerApp')
         $log.info('Remove tag: ' + tag);
     };
 
-    var selectedTags = ['Hamburg', 'New York'];
+    var selectedTags = [{name: 'Hamburg', order:'A'}, {name: 'New York', order:'B'}];
     var selectedTags1 = ['Manila'];
-    var selectedTags2 = ['Buxtehude', 'Buxtehude', 'Berlin'];
+    var selectedTags2 = ['Buxtehude', 'Berlin'];
     var selectedTags3 = [];
-    var selectedTags4 = ['Buxtehude', 'Buxtehude', 'Berlin'];
-    var selectedTags5 = ['Buxtehude', 'Buxtehude', 'Berlin'];
+    var selectedTags4 = ['Buxtehude', 'Berlin'];
+    var selectedTags5 = ['Buxtehude', 'Berlin'];
 
     var dictionary = [{name: 'Hamburg'}, {name: 'Berlin'}, {name: 'Manila'}, {name: 'New York'}, {name: 'San Francisco'}];
 
