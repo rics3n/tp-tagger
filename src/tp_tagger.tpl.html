@@ -11,10 +11,10 @@
       </div>
     </div>
     <div class="tp-btn-wrapper">
-      <button class="btn btn-primary btn-add" ng-click="addTag(searchTag)" ng-if="options.addBtnActive">
+      <button class="btn btn-primary btn-add" type="button" ng-click="addTag(searchTag)" ng-if="options.addBtnActive">
         <i class="fa fa-plus"></i>
       </button>
-      <button class="btn btn-primary btn-search" ng-click="search(options.searchFunction)" ng-if="options.searchFunction" ng-disabled="searching" >
+      <button class="btn btn-primary btn-search" type="button" ng-click="search(options.searchFunction)" ng-if="options.searchFunction" ng-disabled="searching" >
         <span ng-hide="searching">
           <i class="fa fa-search"></i>
         </span>
