@@ -144,7 +144,8 @@
           $log.debug('reset errors');
           $scope.uniqueError = false;
           $scope.hasError = false;
-        }
+        } else
+          return false;
       }
     }
 
