@@ -306,7 +306,7 @@ describe('tpTagger directive', () => {
     });
   });
 
-  describe('link function', ()=>{
+  describe('directive initialization', ()=>{
     describe('it should set default options when options are not passed into', ()=>{
       let default_options = {
         minChar: 1,
@@ -322,17 +322,36 @@ describe('tpTagger directive', () => {
       };
       beforeEach(()=>{
         $scope.$digest();
-        console.log(ctrlScope.options);
       });
-      it('should set initial scope values', ()=> {
-        expect(typeof ctrlScope.options).toBe("object");
-        expect(ctrlScope.options.minChar).toEqual(default_options.minChar);
-        expect(ctrlScope.options.maxResults).toEqual(default_options.maxResults);
-        expect(ctrlScope.options.maxTagLength).toEqual(default_options.maxTagLength);
-        expect(ctrlScope.options.uniqueTags).toEqual(default_options.uniqueTags);
-        expect(ctrlScope.options.selectedTags).toBe(default_options.selectedTags);
-        // expect(ctrlScope.options.dictionary).toBe(default_options.dictionary);
-        // expect(ctrlScope.options.errors).toEqual(default_options.errors);
+      describe('should set initial scope values from default values', ()=> {
+        it('options should be of type object', ()=>{
+          expect(typeof ctrlScope.options).toBe("object");
+        });
+        it('options.minChar should receive default value', ()=>{
+          expect(ctrlScope.options.minChar).toEqual(default_options.minChar);
+        });
+        it('options.maxResults should receive default value', ()=>{
+          expect(ctrlScope.options.maxResults).toEqual(default_options.maxResults);
+
+        });
+        it('options.maxTagLength should receive default value', ()=>{
+          expect(ctrlScope.options.maxTagLength).toEqual(default_options.maxTagLength);
+        });
+        it('options.uniqueTags should receive default value', ()=>{
+          expect(ctrlScope.options.uniqueTags).toEqual(default_options.uniqueTags);
+        });
+        it('selectedTags should receive default value', ()=>{
+          expect(ctrlScope.selectedTags).toEqual(default_options.selectedTags);
+        });
+        it('dictionary should receive default value', ()=>{
+          expect(ctrlScope.dictionary).toEqual(default_options.dictionary);
+        });
+        it('options.errors.notUniqueTag should receive default value', ()=>{
+          expect(ctrlScope.options.errors.notUniqueTag).toBe(default_options.errors.notUniqueTag);
+        });
+        it('options.errors.maxTagLength should receive default value', ()=>{
+          expect(ctrlScope.options.errors.maxTagLength).toBe(default_options.errors.maxTagLength);
+        });
       });
     });
     describe('it should receive and set options when passed into', ()=>{
@@ -352,15 +371,36 @@ describe('tpTagger directive', () => {
         $scope.options = options;
         $scope.$digest();
       });
-      it('should set initial scope values', ()=> {
-        expect(ctrlScope.options).toBeDefined();
-        expect(ctrlScope.options.minChar).toEqual(options.minChar);
-        expect(ctrlScope.options.maxResults).toEqual(options.maxResults);
-        expect(ctrlScope.options.maxTagLength).toEqual(options.maxTagLength);
-        expect(ctrlScope.options.selectedTags).toBe(options.selectedTags);
-        expect(ctrlScope.options.dictionary).toBe(options.dictionary);
-        expect(ctrlScope.options.uniqueTags).toEqual(options.uniqueTags);
-        expect(ctrlScope.options.errors).toBe(options.errors);
+      describe('should set initial scope values from options object', ()=> {
+        it('options should be defined', ()=>{
+          expect(ctrlScope.options).toBeDefined();
+        });
+        it('options.minChar should receive options value', ()=>{
+          expect(ctrlScope.options.minChar).toEqual(options.minChar);
+
+        });
+        it('options.maxResults should receive options value', ()=>{
+          expect(ctrlScope.options.maxResults).toEqual(options.maxResults);
+
+        });
+        it('options.maxTagLength should receive options value', ()=>{
+          expect(ctrlScope.options.maxTagLength).toEqual(options.maxTagLength);
+
+        });
+        it('options.uniqueTags should receive options value', ()=>{
+          expect(ctrlScope.options.selectedTags).toBe(options.selectedTags);
+
+        });
+        it('selectedTags should receive options value', ()=>{
+          expect(ctrlScope.options.dictionary).toBe(options.dictionary);
+
+        });
+        it('dictionary should receive options value', ()=>{
+          expect(ctrlScope.options.uniqueTags).toEqual(options.uniqueTags);
+        });
+        it('options.errors should receive options value', ()=>{
+          expect(ctrlScope.options.errors).toBe(options.errors);
+        });
       });
     });
   });
