@@ -14,10 +14,11 @@
       },
       controller: directiveController,
       link: link,
-      bindToController: true
     };
 
     function directiveController($scope) {
+      // console.log($scope.options);
+      initCtrl();
       //$scope config
       $scope.hasFocus = false;
       $scope.isSuggestionsVisible = false;
@@ -147,31 +148,56 @@
         } else
           return false;
       }
+
+      function initCtrl() {
+        //SUPPORTED OPTIONS (OPTIONS)
+        $scope.options = $scope.options || {};
+        //minimal no of characters that needs to be entered before typeahead kicks-in
+        $scope.options.minChar = $scope.options.minChar || 1;
+        $scope.options.maxResults = $scope.options.maxResults || 10;
+        $scope.options.maxTagLength = $scope.options.maxTagLength || 50;
+        //array of preselected Tags
+        $scope.selectedTags = $scope.options.selectedTags || [];
+        $scope.selectedLowerTags = [];
+        //copy lower case version to seperate array
+        for(var i=0; i<$scope.selectedTags.length; i++) {
+          $scope.selectedLowerTags.push($scope.selectedTags[i].toLowerCase());
+        }
+        //array of tag to search for suggestions
+        $scope.dictionary = $scope.options.dictionary || [];
+        //should the user only be able to add a tag once
+        $scope.options.uniqueTags = $scope.options.uniqueTags || true;
+        //custom error message can be provided
+        $scope.options.errors = $scope.options.errors || {
+            notUniqueTag: 'The tag which you tried to add is not unique. You may only add a Tag once.',
+            maxTagLength: 'The tag which you tried to add is too long. Only ' + $scope.options.maxTagLength + ' characters are allowed.'
+          };
+      }
     }
 
     function link(scope) {
-      //SUPPORTED OPTIONS (OPTIONS)
-      scope.options = scope.options || {};
-      //minimal no of characters that needs to be entered before typeahead kicks-in
-      scope.options.minChar = scope.options.minChar || 1;
-      scope.options.maxResults = scope.options.maxResults || 10;
-      scope.options.maxTagLength = scope.options.maxTagLength || 50;
-      //array of preselected Tags
-      scope.selectedTags = scope.options.selectedTags || [];
-      scope.selectedLowerTags = [];
-      //copy lower case version to seperate array
-      for(var i=0; i<scope.selectedTags.length; i++) {
-        scope.selectedLowerTags.push(scope.selectedTags[i].toLowerCase());
-      }
-      //array of tag to search for suggestions
-      scope.dictionary = scope.options.dictionary || [];
-      //should the user only be able to add a tag once
-      scope.options.uniqueTags = scope.options.uniqueTags || true;
-      //custom error message can be provided
-      scope.options.errors = scope.options.errors || {
-            notUniqueTag: 'The tag which you tried to add is not unique. You may only add a Tag once.',
-            maxTagLength: 'The tag which you tried to add is too long. Only ' + scope.options.maxTagLength + ' characters are allowed.'
-          };
+      // //SUPPORTED OPTIONS (OPTIONS)
+      // scope.options = scope.options || {};
+      // //minimal no of characters that needs to be entered before typeahead kicks-in
+      // scope.options.minChar = scope.options.minChar || 1;
+      // scope.options.maxResults = scope.options.maxResults || 10;
+      // scope.options.maxTagLength = scope.options.maxTagLength || 50;
+      // //array of preselected Tags
+      // scope.selectedTags = scope.options.selectedTags || [];
+      // scope.selectedLowerTags = [];
+      // //copy lower case version to seperate array
+      // for(var i=0; i<scope.selectedTags.length; i++) {
+      //   scope.selectedLowerTags.push(scope.selectedTags[i].toLowerCase());
+      // }
+      // //array of tag to search for suggestions
+      // scope.dictionary = scope.options.dictionary || [];
+      // //should the user only be able to add a tag once
+      // scope.options.uniqueTags = scope.options.uniqueTags || true;
+      // //custom error message can be provided
+      // scope.options.errors = scope.options.errors || {
+      //       notUniqueTag: 'The tag which you tried to add is not unique. You may only add a Tag once.',
+      //       maxTagLength: 'The tag which you tried to add is too long. Only ' + scope.options.maxTagLength + ' characters are allowed.'
+      //     };
     }
   }
 })();
