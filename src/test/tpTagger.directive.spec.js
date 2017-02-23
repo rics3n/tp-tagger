@@ -1,26 +1,30 @@
 describe('tpTagger directive', () => {
-  let $scope, template, controller, ctrlScope, $log;
+  let $scope, template, scope, ctrlScope, $log, $compile, $rootScope;
   beforeEach(() => {
     module('tpTagger');
     module('templates');
-    inject(function ($rootScope, $compile, _$log_) {
+    inject(function (_$rootScope_, _$compile_, _$log_) {
       $log = _$log_;
-
+      $compile = _$compile_;
+      $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       var element = angular.element('<tp-tagger options="options"/>');
       template = $compile(element)($scope);
       $scope.$digest();
-      controller = element.controller('tpTagger');
-
+      //ctrlScope is the scope used by the controller ONLY, it is not visible outside
       ctrlScope = element.isolateScope();
+
+      //scope is the scope used by THE ENTIRE directive, it would not contain the controller's methods
+      scope = element.controller('tpTagger');
     });
   });
   describe('directiveController', ()=>{
     let setError;
     beforeEach(()=>{setError = jasmine.createSpy('setError');});
 
-    it('should set initial scope values', ()=> {
+    it('should initialize scope values', ()=> {
       let arr = [];
+
       expect(ctrlScope).toBeDefined();
       expect(ctrlScope.hasFocus).toBeFalsy();
       expect(ctrlScope.isSuggestionsVisible).toBeFalsy();
@@ -298,6 +302,65 @@ describe('tpTagger directive', () => {
       it('should return false if $scope.hasError is falsy', ()=>{
         ctrlScope.hasError = false;
         expect(ctrlScope.resetErrors()).toBeFalsy();
+      });
+    });
+  });
+
+  describe('link function', ()=>{
+    describe('it should set default options when options are not passed into', ()=>{
+      let default_options = {
+        minChar: 1,
+        maxResults: 10,
+        maxTagLength: 50,
+        selectedTags: [],
+        dictionary: [],
+        uniqueTags: true,
+        errors: {
+          notUniqueTag: 'The tag which you tried to add is not unique. You may only add a Tag once.',
+          maxTagLength: 'The tag which you tried to add is too long. Only ' + this.maxTagLength + ' characters are allowed.'
+        }
+      };
+      beforeEach(()=>{
+        $scope.$digest();
+        console.log(ctrlScope.options);
+      });
+      it('should set initial scope values', ()=> {
+        expect(typeof ctrlScope.options).toBe("object");
+        expect(ctrlScope.options.minChar).toEqual(default_options.minChar);
+        expect(ctrlScope.options.maxResults).toEqual(default_options.maxResults);
+        expect(ctrlScope.options.maxTagLength).toEqual(default_options.maxTagLength);
+        expect(ctrlScope.options.uniqueTags).toEqual(default_options.uniqueTags);
+        expect(ctrlScope.options.selectedTags).toBe(default_options.selectedTags);
+        // expect(ctrlScope.options.dictionary).toBe(default_options.dictionary);
+        // expect(ctrlScope.options.errors).toEqual(default_options.errors);
+      });
+    });
+    describe('it should receive and set options when passed into', ()=>{
+      let options = {
+        minChar: 1,
+        maxResults: 1,
+        maxTagLength: 1,
+        selectedTags: ['Berlin', 'Warsaw'],
+        dictionary: ['Berlin', 'Amsterdam', 'Warsaw'],
+        uniqueTags: false,
+        errors: {
+          notUniqueTag: 'not unique. You may only add a Tag once.',
+          maxTagLength: 'too long. Only ' + this.maxTagLength + ' characters are allowed.'
+        }
+      };
+      beforeEach(()=>{
+        $scope.options = options;
+        $scope.$digest();
+      });
+      it('should set initial scope values', ()=> {
+        expect(ctrlScope.options).toBeDefined();
+        expect(ctrlScope.options.minChar).toEqual(options.minChar);
+        expect(ctrlScope.options.maxResults).toEqual(options.maxResults);
+        expect(ctrlScope.options.maxTagLength).toEqual(options.maxTagLength);
+        expect(ctrlScope.options.selectedTags).toBe(options.selectedTags);
+        expect(ctrlScope.options.dictionary).toBe(options.dictionary);
+        expect(ctrlScope.options.uniqueTags).toEqual(options.uniqueTags);
+        expect(ctrlScope.options.errors).toBe(options.errors);
       });
     });
   });
