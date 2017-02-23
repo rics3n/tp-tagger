@@ -2,9 +2,6 @@
   angular.module('tpTagger')
       .directive('tpTagger', tpTagger);
 
-  // tpTagger.$inject = ['$timeout', $filter, $log];
-  // directiveController.$inject = ['$scope'];
-
   function tpTagger($timeout, $filter, $log){
     return {
       restrict: 'AE',
@@ -17,7 +14,6 @@
     };
 
     function directiveController($scope) {
-      // console.log($scope.options);
       initCtrl();
       //$scope config
       $scope.hasFocus = false;
