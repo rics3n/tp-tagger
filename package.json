@@ -53,7 +53,7 @@
     "http-proxy": "~1.7.0",
     "jasmine-core": "^2.5.2",
     "jshint-stylish": "~1.0.0",
-    "karma": "^1.4.1",
+    "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.1.0",
     "karma-ng-html2js-preprocessor": "^1.0.0",
