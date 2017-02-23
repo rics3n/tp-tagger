@@ -170,7 +170,7 @@
         //custom error message can be provided
         $scope.options.errors = $scope.options.errors || {
             notUniqueTag: 'The tag which you tried to add is not unique. You may only add a Tag once.',
-            maxTagLength: 'The tag which you tried to add is too long. Only ' + $scope.options.maxTagLength + ' characters are allowed.'
+            maxTagLength: 'The tag which you tried to add is too long. Only ' + this.maxTagLength + ' characters are allowed.'
           };
       }
     }
