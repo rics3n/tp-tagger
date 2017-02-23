@@ -150,7 +150,6 @@
 
     function link(scope) {
       //SUPPORTED OPTIONS (OPTIONS)
-      scope.test = 'dsafasd';
       scope.options = scope.options || {};
       //minimal no of characters that needs to be entered before typeahead kicks-in
       scope.options.minChar = scope.options.minChar || 1;
