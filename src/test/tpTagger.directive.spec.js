@@ -198,13 +198,86 @@ describe('tpTagger directive', () => {
       });
     });
 
-    // describe('$scope.changeInput', ()=>{
-    //
-    // });
-    //
-    // describe('$scope.changeSuggestionVisible', ()=>{
-    //
-    // });
+    describe('$scope.changeInput', ()=>{
+      beforeEach(()=>{
+        spyOn(ctrlScope, 'resetErrors');
+      });
+      describe('if searchTags length is longer the options.minChar', () => {
+        let expectedFilteredResults = ['Bern', 'Berlin'];
+        let unExpectedFilteredResults = ['Bern'];
+        beforeEach(()=>{
+          ctrlScope.dictionary = ['Bern', 'Berlin', 'Amsterdam', 'Warsaw'];
+          ctrlScope.searchTag = 'Be';
+          ctrlScope.options.maxResults = 2;
+          ctrlScope.options.minChar = 1;
+          spyOn(ctrlScope, 'changeSuggestionVisible');
+          ctrlScope.changeInput();
+          expect(ctrlScope.searchTag.length).toBeGreaterThan(ctrlScope.options.minChar);
+        });
+        it('should set return subset of items from $scope.dictionary when searching with searchTag', ()=>{
+          expect(ctrlScope.suggestions).toEqual(expectedFilteredResults);
+          expect(ctrlScope.suggestions).not.toEqual(unExpectedFilteredResults);
+        });
+        it('should leave only the amount of $scope.suggestions set in options.maxResults', ()=>{
+          expect(ctrlScope.suggestions.length).toEqual(ctrlScope.options.maxResults);
+          expect(ctrlScope.suggestions.length).not.toBeGreaterThan(ctrlScope.options.maxResults);
+          expect(ctrlScope.options.maxResults).not.toBeGreaterThan(ctrlScope.suggestions.length);
+        });
+        it('should call changeSuggestionVisible with true if there are more then 1 suggestion', ()=>{
+          expect(ctrlScope.changeSuggestionVisible).toHaveBeenCalledWith(true);
+        });
+        it('should call changeSuggestionVisible with false if there are less then 1 suggestion', ()=>{
+          ctrlScope.searchTag = 'Ed';
+          ctrlScope.changeInput();
+          expect(ctrlScope.changeSuggestionVisible).toHaveBeenCalledWith(false);
+        });
+        it('should call resetErrors function', ()=>{
+          expect(ctrlScope.resetErrors).toHaveBeenCalled();
+        });
+      });
+      describe('else', ()=>{
+        beforeEach(()=>{
+          ctrlScope.searchTag = 'a';
+          ctrlScope.options.minChar = 3;
+          spyOn(ctrlScope, 'changeSuggestionVisible');
+          ctrlScope.changeInput();
+        });
+        it('search term should contain less letters than options.minChar', ()=>{
+          expect(ctrlScope.options.minChar).toBeGreaterThan(ctrlScope.searchTag.length);
+        });
+        it('should call changeSuggestionVisible with false if isSuggestionsVisible is true', ()=>{
+          if (ctrlScope.isSuggestionsVisible)
+            expect(ctrlScope.changeSuggestionVisible).toHaveBeenCalledWith(false);
+          else {
+            expect(ctrlScope.changeSuggestionVisible).not.toHaveBeenCalledWith(false);
+          }
+        });
+        it('should call resetErrors function', ()=>{
+          expect(ctrlScope.resetErrors).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('$scope.changeSuggestionVisible', ()=>{
+      it('should set isSuggestionsVisible to true if received argument true', ()=>{
+        ctrlScope.changeSuggestionVisible(true);
+        expect(ctrlScope.isSuggestionsVisible).toBeTruthy();
+      });
+      describe('if receives argument false', ()=>{
+        beforeEach(()=>{
+          ctrlScope.changeSuggestionVisible(false);
+        });
+        it('should set selectedSuggestionIndex to -1',()=>{
+          expect(ctrlScope.selectedSuggestionIndex).toEqual(-1);
+        });
+        it('should set selectedSuggestion to undefined',()=>{
+          expect(ctrlScope.selectedSuggestion).toEqual(undefined);
+        });
+        it('should set isSuggestionsVisible to false',()=>{
+          expect(ctrlScope.isSuggestionsVisible).toBeFalsy();
+        });
+      });
+    });
     //
     // describe('$scope.resetErrors', ()=>{
     //
