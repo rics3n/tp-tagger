@@ -278,9 +278,27 @@ describe('tpTagger directive', () => {
         });
       });
     });
-    //
-    // describe('$scope.resetErrors', ()=>{
-    //
-    // });
+
+    describe('$scope.resetErrors', ()=>{
+      describe('if $scope.hasError truthy', ()=>{
+        beforeEach(()=>{
+          ctrlScope.hasError = true;
+          ctrlScope.resetErrors();
+        });
+        it('should log.debug "reset errors"', ()=>{
+          expect($log.debug.logs[0]).toEqual(['reset errors']);
+        });
+        it('should set uniqueError to false', ()=>{
+          expect(ctrlScope.uniqueError).toBeFalsy();
+        });
+        it('should set hasError to false', ()=>{
+          expect(ctrlScope.hasError).toBeFalsy();
+        });
+      });
+      it('should return false if $scope.hasError is falsy', ()=>{
+        ctrlScope.hasError = false;
+        expect(ctrlScope.resetErrors()).toBeFalsy();
+      });
+    });
   });
 });
