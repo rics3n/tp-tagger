@@ -1,0 +1,28 @@
+<div ng-click="setFocus = true">
+  <div class="tp-tagger-error-texts" ng-show="hasError">
+    <span ng-show="uniqueError">{{options.errors.notUniqueTag}}</span>
+    <span ng-show="maxTagLengthError">{{options.errors.maxTagLength}}</span>
+  </div>
+  <div class="tp-tagger">
+    <div class="tp-tags-wrapper">
+      <div class="tp-tags">
+        <span class="tp-tag" ng-repeat="tag in selectedTags track by $index">{{ tag }}<span class="delete" ng-click="deleteTag($index)"><i class="fa fa-times"></i></span></span>
+        <input tp-tagger-input ng-change="changeInput()" type="text" class="input input-text tp-tag-input" placeholder="{{options.placeholderText}}" ng-focus="hasFocus = true" ng-blur="hasFocus = false" tp-focus="setFocus" ng-model="searchTag" autocomplete="off"/>
+      </div>
+    </div>
+    <div class="tp-btn-wrapper">
+      <button class="btn btn-primary btn-add" type="button" ng-click="addTag(searchTag)" ng-if="options.addBtnActive">
+        <i class="fa fa-plus"></i>
+      </button>
+      <button class="btn btn-primary btn-search" type="button" ng-click="search(options.searchFunction)" ng-if="options.searchFunction" ng-disabled="searching" >
+        <span ng-hide="searching">
+          <i class="fa fa-search"></i>
+        </span>
+        <span ng-show="searching">
+          <i class="fa fa-spinner fa-spin"></i>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div tp-tagger-popup></div>
+</div>
