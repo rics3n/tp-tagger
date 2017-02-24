@@ -14,8 +14,7 @@
 
     function link(scope, element) {
       var mapOfKeyStrokes = {};
-
-      element.bind('blur', function() {
+      element.on('blur', function() {
         if (scope.searchTag.length > 0 && scope.selectedSuggestionIndex < 0) {
           //add the input
           scope.addTag(scope.searchTag);
@@ -27,28 +26,30 @@
 
         scope.changeSuggestionVisible(false);
       });
-
       //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27), ctrl(17), s(83), remove(8)
-      element.bind('keydown', function(evt) {
-        //$log.info(evt.which);
-        //typeahead is open and an "interesting" key was pressed
-        if ((!scope.isSuggestionsVisible || HOT_KEYS_SUGGESTION.indexOf(evt.which) === -1) && HOT_KEYS.indexOf(evt.which) === -1) {
-          if (!(mapOfKeyStrokes[17] && evt.which === 83)) {
-            //$log.debug('not important key pressed');
-            mapOfKeyStrokes = {};
-            return;
-          }
-        } else if (evt.which === 8 && scope.searchTag !== '') {
+      element.on('keydown', function(evt) {
+        mapOfKeyStrokes[evt.which] = evt.type === 'keydown';
+        function clearmapOfKeyStrokes(){
           mapOfKeyStrokes = {};
           return;
         }
 
+
+        //$log.info(evt.which);
+        //typeahead is open and an "interesting" key was pressed
         if (!evt) {
           evt = $window.event;
         }
-
-        mapOfKeyStrokes[evt.which] = evt.type === 'keydown';
-
+        if ((!scope.isSuggestionsVisible || HOT_KEYS_SUGGESTION.indexOf(evt.which) === -1) && HOT_KEYS.indexOf(evt.which) === -1) {
+          if (!(mapOfKeyStrokes[17] && evt.which === 83)) {
+            return clearmapOfKeyStrokes();
+          }
+        } else if (evt.which === 8 && scope.searchTag !== '') {
+          return clearmapOfKeyStrokes();
+        }
+        ///////////////////////////////////////////////////////////////
+        //Handlers to keyboard strokes
+        ///////////////////////////////////////////////////////////////
         if(!mapOfKeyStrokes[9]) {
           //tab press should be handled by default event
           evt.preventDefault();
