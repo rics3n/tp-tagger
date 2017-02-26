@@ -26,6 +26,10 @@
      */
     function directiveController($scope) {
       initCtrl();
+      /**
+       * Although initialization of this controller takes place in initCtrl function
+       * It is better to separate the controller's logic initialization from the one of options passed.
+       */
       $scope.hasFocus = false;
       $scope.isSuggestionsVisible = false;
       $scope.suggestions = [];
@@ -36,14 +40,16 @@
       $scope.maxTagLengthError = false;
       $scope.hasError = false;
 
-      //$scope methods
+      /**
+       * All the controller methods are defined in this section, in an alphabetic order
+       */
       $scope.addTag = addTag;
-      $scope.deleteTag = deleteTag;
-      $scope.search = search;
-      $scope.isActive = isActive;
-      $scope.selectActive = selectActive;
       $scope.changeInput = changeInput;
       $scope.changeSuggestionVisible = changeSuggestionVisible;
+      $scope.deleteTag = deleteTag;
+      $scope.isActive = isActive;
+      $scope.search = search;
+      $scope.selectActive = selectActive;
       $scope.resetErrors = resetErrors;
       /////////////////////////////////////////////
 
